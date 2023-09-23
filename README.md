@@ -1,12 +1,10 @@
-# component_modbus
 
+This module has TCP and RTU functions, and the function code only supports register operations·
+This module has the following features in terms of functionality
+- Build only for the application layer
+- Lower coupling between sub modules
+- Stronger availability
 
-## log
-
-
-## Experience
-
-- 设计精妙
-    - 文件接口做得很好
-        - 比如在mb.h文件引出要用户实现的函数，同时在需要的文件中进行
-    - 
+Refer-Thank you!
+- freemodbus
+- 《Modbus协议中文版【完整版】.pdf》
