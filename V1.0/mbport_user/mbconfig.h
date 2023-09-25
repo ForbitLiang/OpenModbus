@@ -5,8 +5,8 @@
 *	NAME    :	mbconfig.h
 * 	VERSION :	V1.0
 * 	DATE    :	2023.09.23
-* 	AUTHOR  :	forbit Liang
-*	DESP.   :	
+* 	AUTHOR  :	forbit
+*	DESP.   :
 ******************************************************************************/
 
 #ifndef _MB_CONFIG_H

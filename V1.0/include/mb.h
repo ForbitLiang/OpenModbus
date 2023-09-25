@@ -5,15 +5,8 @@
 *	NAME    :	mb.h
 * 	VERSION :	V1.0
 * 	DATE    :	2023.09.23
-* 	AUTHOR  :	forbit Liang
-*	DESP.   :	This module has TCP and RTU functions, and the function code only supports register operations· 
-                This module has the following features in terms of functionality
-                    - Build only for the application layer
-                    - Lower coupling between sub modules
-                    - Stronger availability
-                Refer-Thank you!
-                - freemodbus
-                - 《Modbus协议中文版【完整版】.pdf》
+* 	AUTHOR  :	forbit
+*	DESP.   :
 ******************************************************************************/
 
 #ifndef _MB_H
@@ -37,14 +30,14 @@
 /*
 - define
     - proto
-        - Frame   
+        - Frame
         - MB_FUNC
-        - Modbus Slave Defines 
+        - Modbus Slave Defines
         - func
 - data types
 - enumerations
     - frame
-    - State machine and error code of process 
+    - State machine and error code of process
 - data structures
 - function
 
@@ -66,7 +59,7 @@
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                                   Frame 
+*                                                   Frame
 ------------------------------------------------------------------------------------------------------------------------
 */
 /*!
@@ -75,7 +68,7 @@
  *            | Function Code | Data                       |
  *            +---------------+----------------------------+
  *            |               |                            |
- *  byte:    (0)             (1)                          
+ *  byte:    (0)             (1)
  */
 
 #define     MB_PDU_FUNC_OFF                                 ( 0 )          /*!< Offset of function code in PDU. */
@@ -93,7 +86,7 @@
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                                   MB_FUNC  
+*                                                   MB_FUNC
 ------------------------------------------------------------------------------------------------------------------------
 */
 #define     MB_FUNC_NONE                                    (  0 )
@@ -117,7 +110,7 @@
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                                   func  
+*                                                   func
 ------------------------------------------------------------------------------------------------------------------------
 */
 
@@ -136,7 +129,7 @@ typedef  struct     stru_mbuserif                  Stru_MBUserIF;
 typedef  struct     xmbfunctionhandler             xMBFunctionHandler;
 typedef  struct     stru_mbframefunc               Stru_MBFrameFunc;
 
-typedef  struct     stru_mbhandle                  Stru_MBHandle;    
+typedef  struct     stru_mbhandle                  Stru_MBHandle;
 typedef  struct     stru_mb                        Stru_MB;
 
 typedef  enum       enum_mbmode                    Enum_MBMode;
@@ -181,10 +174,10 @@ enum enum_mbmode
 enum enum_mbexceptioncode
 {
     enum_MB_EX_NONE                     = 0x00,
-    enum_MB_EX_ILLEGAL_FUNCTION         = 0x01,          
-    enum_MB_EX_ILLEGAL_DATA_ADDRESS     = 0x02,  
-    enum_MB_EX_ILLEGAL_DATA_VALUE       = 0x03,    
-    enum_MB_EX_SLAVE_DEVICE_FAILURE     = 0x04,  
+    enum_MB_EX_ILLEGAL_FUNCTION         = 0x01,
+    enum_MB_EX_ILLEGAL_DATA_ADDRESS     = 0x02,
+    enum_MB_EX_ILLEGAL_DATA_VALUE       = 0x03,
+    enum_MB_EX_SLAVE_DEVICE_FAILURE     = 0x04,
     enum_MB_EX_ACKNOWLEDGE              = 0x05,
     enum_MB_EX_SLAVE_BUSY               = 0x06,
     enum_MB_EX_MEMORY_PARITY_ERROR      = 0x08,
@@ -194,13 +187,13 @@ enum enum_mbexceptioncode
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                         State machine and error code of process 
+*                                         State machine and error code of process
 ------------------------------------------------------------------------------------------------------------------------
 */
 
 enum enum_statemachine_mbevent
 {
-    enum_EV_INITIAL                     = 0x00,                 /* initial state. */   
+    enum_EV_INITIAL                     = 0x00,                 /* initial state. */
     enum_EV_READY                       = 0x01,                 /* Startup finished. */
     enum_EV_FRAME_RECEIVED              = 0x02,                 /* Frame received. */
     enum_EV_EXECUTE                     = 0x03,                 /* Execute function. */
@@ -233,7 +226,7 @@ enum enum_mberrorcode
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                                   register description 
+*                                                   register description
 ------------------------------------------------------------------------------------------------------------------------
 */
 struct stru_mbuserregister
@@ -262,7 +255,7 @@ struct stru_mbuserregister
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                                   register function 
+*                                                   register function
 ------------------------------------------------------------------------------------------------------------------------
 */
 
@@ -295,18 +288,18 @@ struct stru_mbframefunc
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                                   all 
+*                                                   all
 ------------------------------------------------------------------------------------------------------------------------
 */
-struct stru_mbhandle  
+struct stru_mbhandle
 {
 
-    UCHAR                               MBAddressSelf;                  
+    UCHAR                               MBAddressSelf;
     Enum_MBMode                         MBCurrMode;                 /* working mode */
 
     Enum_MBErrorCode                    MBErrorCode;
     Enum_MBExceptionCode                MBExceptionCode;            /* parse parpackage error */
-	
+
     Enum_StateMachine_MBEvent 	        MBCurrEvent;                /* current handle process's event, it is detail of "current handle process's state" */
 
     UCHAR                               RcvAddress;
@@ -316,16 +309,16 @@ struct stru_mbhandle
     UCHAR                               *pMBFrame_PDU;
 
 	UCHAR 	                            SndBuff[MB_BUFF_SIZE];
-    USHORT 			                    SndBuffCount;    
+    USHORT 			                    SndBuffCount;
     UCHAR                               *pMBSendFrame;
 
-    USHORT                              FrameLength_PDU;   
+    USHORT                              FrameLength_PDU;
 };
 
 
 struct stru_mb
 {
-    Stru_MBHandle                       MBHandle;          
+    Stru_MBHandle                       MBHandle;
 	Stru_MBFrameFunc  	                FrameFunc;
     Stru_MBUserIF                       UserIF;
 };
@@ -342,11 +335,11 @@ struct stru_mb
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                                   Utils 
+*                                                   Utils
 ------------------------------------------------------------------------------------------------------------------------
-*/ 
-UCHAR                       clear_entire_struct(Stru_MB *pStru_MB);  
-UCHAR                       clear_part_struct(Stru_MB *pStru_MB);                                                          
+*/
+UCHAR                       clear_entire_struct(Stru_MB *pStru_MB);
+UCHAR                       clear_part_struct(Stru_MB *pStru_MB);
 
 
 /* ================================================================================================================== */
@@ -355,7 +348,7 @@ UCHAR                       clear_part_struct(Stru_MB *pStru_MB);
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
-*                                                   port 
+*                                                   port
 ------------------------------------------------------------------------------------------------------------------------
 */
 /* ----------------------- Supporting functions -----------------------------*/
@@ -406,7 +399,7 @@ Enum_MBExceptionCode        eMBFuncReadDiscreteInputs(Stru_MB *pStru_MB);
 #endif
 
 #if MB_FUNC_READWRITE_HOLDING_ENABLED > 0
-Enum_MBExceptionCode        eMBFuncReadWriteMultipleHoldingRegister(Stru_MB *pStru_MB);                                                       
+Enum_MBExceptionCode        eMBFuncReadWriteMultipleHoldingRegister(Stru_MB *pStru_MB);
 #endif
 
 
@@ -414,8 +407,8 @@ Enum_MBExceptionCode        eMBFuncReadWriteMultipleHoldingRegister(Stru_MB *pSt
 /* ================================================================================================================== */
 /*                                                      RROCESS                                                       */
 /* ================================================================================================================== */
-Enum_MBErrorCode            MBInit( Stru_MB     *pStru_MB, 
-                                    Enum_MBMode Enum_Mode, 
+Enum_MBErrorCode            MBInit( Stru_MB     *pStru_MB,
+                                    Enum_MBMode Enum_Mode,
                                     UCHAR       SlaveAddress );
 Enum_MBErrorCode            MBPoll( Stru_MB     *pStru_MB );
 

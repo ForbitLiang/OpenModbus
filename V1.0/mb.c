@@ -5,15 +5,8 @@
 *	NAME    :	mb.h
 * 	VERSION :	V1.0
 * 	DATE    :	2023.09.23
-* 	AUTHOR  :	forbit Liang
-*	DESP.   :	This module has TCP and RTU functions, and the function code only supports register operations· 
-                This module has the following features in terms of functionality
-                    - Build only for the application layer
-                    - Lower coupling between sub modules
-                    - Stronger availability
-                Refer-Thank you!
-                - freemodbus
-                - 《Modbus协议中文版【完整版】.pdf》
+* 	AUTHOR  :	forbit
+*	DESP.   :
 ******************************************************************************/
 
 /* ----------------------- System includes ----------------------------------*/
@@ -69,15 +62,15 @@ static xMBFunctionHandler FuncHandlers[MB_FUNC_HANDLERS_MAX] = {
 
 /****************************************************************************
 *   PROTO.  :  	Enum_MBErrorCode    MBInit(Stru_MB *pStru_MB, Enum_MBMode Enum_Mode, UCHAR SlaveAddress)
-*   PARAM.  :  	Stru_MB *pStru_MB       
-*               Enum_MBMode Enum_Mode   working mode    
-*               UCHAR SlaveAddress      as a slave,self address        
-*   RETURN  :   error code 
+*   PARAM.  :  	Stru_MB *pStru_MB
+*               Enum_MBMode Enum_Mode   working mode
+*               UCHAR SlaveAddress      as a slave,self address
+*   RETURN  :   error code
 *   DESP.   :	initial
 ****************************************************************************/
 Enum_MBErrorCode    MBInit(Stru_MB *pStru_MB, Enum_MBMode Enum_Mode, UCHAR SlaveAddress)
 {
-    Enum_MBErrorCode    Enum_ErrCode = enum_MB_ENOERR;    
+    Enum_MBErrorCode    Enum_ErrCode = enum_MB_ENOERR;
     Stru_MBHandle       *pStru_MBHandle = &(pStru_MB->MBHandle);
 
     assert_param(NULL != ppStru_MBHandle);
@@ -88,15 +81,15 @@ Enum_MBErrorCode    MBInit(Stru_MB *pStru_MB, Enum_MBMode Enum_Mode, UCHAR Slave
      || ( SlaveAddress < MB_ADDRESS_MIN ) \
      || ( SlaveAddress > MB_ADDRESS_MAX ) )
     {
-        return enum_MB_EINVAL;                                           
+        return enum_MB_EINVAL;
     }
 
     pStru_MBHandle->MBCurrMode = Enum_Mode;
     pStru_MBHandle->MBAddressSelf = SlaveAddress;
 
-    switch(Enum_Mode)                                                  
+    switch(Enum_Mode)
     {
-        
+
 #if enum_MB_RTU_ENABLED == 1
         case enum_MB_RTU:
             Enum_ErrCode = MBRTUInit(pStru_MB);
@@ -110,7 +103,7 @@ Enum_MBErrorCode    MBInit(Stru_MB *pStru_MB, Enum_MBMode Enum_Mode, UCHAR Slave
 #endif /* enum_MB_TCP_ENABLED == 1 */
 
         default:
-            Enum_ErrCode = enum_MB_EINVAL;                               
+            Enum_ErrCode = enum_MB_EINVAL;
             break;
     }
 
@@ -118,7 +111,7 @@ Enum_MBErrorCode    MBInit(Stru_MB *pStru_MB, Enum_MBMode Enum_Mode, UCHAR Slave
     {
         if( !MBPortEventInit(pStru_MBHandle) )
         {
-            Enum_ErrCode = enum_MB_EPORTERR;                          
+            Enum_ErrCode = enum_MB_EPORTERR;
         }
     }
 
@@ -129,7 +122,7 @@ Enum_MBErrorCode    MBInit(Stru_MB *pStru_MB, Enum_MBMode Enum_Mode, UCHAR Slave
 /****************************************************************************
 *   PROTO.  :  	MBPoll(Stru_MB *pStru_MB)
 *   PARAM.  :  	Stru_MB *pStru_MB)
-*   RETURN  :   error code 
+*   RETURN  :   error code
 *   DESP.   :	poll
 ****************************************************************************/
 Enum_MBErrorCode    MBPoll(Stru_MB *pStru_MB)
@@ -139,8 +132,8 @@ Enum_MBErrorCode    MBPoll(Stru_MB *pStru_MB)
     Stru_MBFrameFunc 	                *pStru_FrameFunc = &(pStru_MB->FrameFunc);
 
     Enum_MBErrorCode                    Enum_ErrCode = enum_MB_ENOERR;
-    
-    SHORT                                i;   
+
+    SHORT                                i;
 
     switch ( MBPortEventGet(pStru_MBHandle) )
     {
@@ -153,9 +146,9 @@ Enum_MBErrorCode    MBPoll(Stru_MB *pStru_MB)
             break;
 
         case enum_EV_FRAME_RECEIVED:        /* extract PDU */
-            
+
             Enum_ErrCode = pStru_FrameFunc->PFuncType_MBFrameReceiveCur(pStru_MBHandle);
-            
+
             if( Enum_ErrCode != enum_MB_ENOERR )
             {
                 MBPortEventPost(pStru_MBHandle, enum_EV_FINISH);
@@ -172,13 +165,13 @@ Enum_MBErrorCode    MBPoll(Stru_MB *pStru_MB)
                 MBPortEventPost(pStru_MBHandle, enum_EV_FINISH);
                 return enum_MB_EILLSTATE;
             }
-            
+
             break;
 
         case enum_EV_EXECUTE:       /* handle PDU and generate send PDU */
 
             pStru_MBHandle->RcvFunctionCode = pStru_MBHandle->pMBFrame_PDU[MB_PDU_FUNC_OFF];
-     
+
             for( i = 0; i < MB_FUNC_HANDLERS_MAX; i++ )
             {
 
@@ -192,10 +185,10 @@ Enum_MBErrorCode    MBPoll(Stru_MB *pStru_MB)
                     pStru_MBHandle->MBExceptionCode = enum_MB_EX_ILLEGAL_FUNCTION;
                     break;
                 }
-            }   
+            }
 
             if( pStru_MBHandle->RcvAddress == MB_ADDRESS_BROADCAST )
-            {      
+            {
                 MBPortEventPost(pStru_MBHandle, enum_EV_FINISH);
                 break;
             }
@@ -213,7 +206,7 @@ Enum_MBErrorCode    MBPoll(Stru_MB *pStru_MB)
             clear_part_struct(pStru_MB);
             MBPortEventPost(pStru_MBHandle, enum_EV_READY);
             break;
-            
+
         default:
             break;
     }

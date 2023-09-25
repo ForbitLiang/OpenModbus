@@ -5,8 +5,8 @@
 *	NAME    :	mbtcp.h
 * 	VERSION :	V1.0
 * 	DATE    :	2023.09.23
-* 	AUTHOR  :	forbit Liang
-*	DESP.   :	
+* 	AUTHOR  :	forbit
+*	DESP.   :
 ******************************************************************************/
 
 #ifndef __MB_TCP_H

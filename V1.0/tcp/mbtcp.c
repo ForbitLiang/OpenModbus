@@ -5,8 +5,8 @@
 *	NAME    :	mbtcp.c
 * 	VERSION :	V1.0
 * 	DATE    :	2023.09.23
-* 	AUTHOR  :	forbit Liang
-*	DESP.   :	
+* 	AUTHOR  :	forbit
+*	DESP.   :
 ******************************************************************************/
 
 /* ----------------------- System includes ----------------------------------*/
@@ -17,13 +17,13 @@
 
 
 /* ----------------------- Modbus includes ----------------------------------*/
-#include "mbtcp.h"  
+#include "mbtcp.h"
 
 /* ----------------------- Defines ------------------------------------------*/
 #define MB_TCP_SIZE_MIN                 8       /* Minimum size of a Modbus TCP frame. */
 #define MB_TCP_PDU_SIZE_MIN             4       /* Minimum size of a Modbus TCP frame. */
 #define MB_TCP_PDU_SIZE_MAX             256     /* Maximum size of a Modbus TCP frame. */
-#define MB_TCP_PDU_PDU_OFF              7       /* Offset of Modbus-PDU in Ser-PDU. */ 
+#define MB_TCP_PDU_PDU_OFF              7       /* Offset of Modbus-PDU in Ser-PDU. */
 
 #define MB_TCP_ADU_OFF                  0       /* the location of adu off */
 #define MB_TCP_ADU_TRANSACTION_ID_OFF   0       /* the location of transaction identifier */
@@ -54,8 +54,8 @@ static Enum_MBErrorCode     MBTCPReceive(Stru_MBHandle *pStru_MBHandle)
 {
     Enum_MBErrorCode    Enum_ErrCode = enum_MB_ENOERR;
 
-    assert_param( pStru_MBHandle->usBuffPos < MB_TCP_PDU_SIZE_MAX ); 
-    
+    assert_param( pStru_MBHandle->usBuffPos < MB_TCP_PDU_SIZE_MAX );
+
     if( pStru_MBHandle->RcvBuffPos >= MB_TCP_SIZE_MIN )
     {
         pStru_MBHandle->RcvAddress = MB_TCP_FAKE_ADDRESS;
@@ -68,7 +68,7 @@ static Enum_MBErrorCode     MBTCPReceive(Stru_MBHandle *pStru_MBHandle)
     {
         Enum_ErrCode = enum_MB_EIO;
     }
-    
+
     return Enum_ErrCode;
 }
 
@@ -76,7 +76,7 @@ static Enum_MBErrorCode     MBTCPSend(Stru_MBHandle *pStru_MBHandle)
 {
     Enum_MBErrorCode    Enum_ErrCode = enum_MB_ENOERR;
     USHORT              CRC16;
-    
+
 /* # generate ADU */
 
     pStru_MBHandle->SndBuff[MB_TCP_ADU_TRANSACTION_ID_OFF] = pStru_MBHandle->RcvBuff[MB_TCP_ADU_TRANSACTION_ID_OFF];
@@ -96,7 +96,7 @@ static Enum_MBErrorCode     MBTCPSend(Stru_MBHandle *pStru_MBHandle)
             case MB_FUNC_READ_HOLDING_REGISTER:
                 pStru_MBHandle->SndBuff[MB_TCP_ADU_ERROR_CODE_OFF] = 0x83;
                 break;
-            
+
             case MB_FUNC_WRITE_REGISTER:
                 pStru_MBHandle->SndBuff[MB_TCP_ADU_ERROR_CODE_OFF] = 0x86;
                 break;
@@ -106,17 +106,17 @@ static Enum_MBErrorCode     MBTCPSend(Stru_MBHandle *pStru_MBHandle)
             case MB_FUNC_READWRITE_MULTIPLE_REGISTERS:
                 pStru_MBHandle->SndBuff[MB_TCP_ADU_ERROR_CODE_OFF] = 0x97;
                 break;
-            
+
             default:
                 break;
         }
         pStru_MBHandle->SndBuffCount += 1;
-			
+
         pStru_MBHandle->SndBuff[MB_TCP_ADU_EXCEPTION_CODE_OFF] = pStru_MBHandle->MBExceptionCode;
         pStru_MBHandle->SndBuffCount += 1;
     }
     pStru_MBHandle->SndBuff[MB_TCP_ADU_LENGTH_ID_OFF] = pStru_MBHandle->SndBuffCount - 5;
     pStru_MBHandle->pMBSendFrame = &(pStru_MBHandle->SndBuff[MB_PDU_DATA_OFF - MB_TCP_ADU_PREFIX_LENGTH]);
 
-    return Enum_ErrCode;    
+    return Enum_ErrCode;
 }

@@ -5,8 +5,8 @@
 *	NAME    :	port.h
 * 	VERSION :	V1.0
 * 	DATE    :	2023.09.23
-* 	AUTHOR  :	forbit Liang
-*	DESP.   :	
+* 	AUTHOR  :	forbit
+*	DESP.   :
 ******************************************************************************/
 
 #ifndef _PORT_H
